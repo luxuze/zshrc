@@ -51,3 +51,20 @@ alias pull='git pull'
 # --------------------------------------------------------git alias
 
 
+
+stop_process () {
+    echo "stop process of "$1
+    _PID=`ps ufx | grep "$1" | awk '{print $2}'`
+    echo "$_PID"|while read pid
+    do
+        if [ "$pid" != "" ]; then
+            echo "kill process $pid"
+            kill $pid
+        else
+            echo "No "$1" processes detected."
+        fi
+    done
+
+    echo "Done."
+}
+
