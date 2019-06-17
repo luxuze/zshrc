@@ -47,6 +47,7 @@ alias push='git push'
 alias co='git checkout'
 alias add='git add -A'
 alias commit='git commit -m'
+alias pull='git pull'
 # --------------------------------------------------------git alias
 
 
