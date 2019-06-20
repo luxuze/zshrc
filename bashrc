@@ -48,7 +48,7 @@ alias co='git checkout'
 alias add='git add -A'
 alias commit='git commit -m'
 alias pull='git pull'
-alias glog='git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit'
+alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # --------------------------------------------------------git alias
 
 
