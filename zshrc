@@ -1,4 +1,4 @@
-# If you come from bash you might have to change your $PATH.
+                                                                                                        # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
@@ -116,9 +116,12 @@ alias push='git push'
 alias co='git checkout'
 alias add='git add -A'
 alias commit='git commit -m'
-alias pull='git pull'
+alias pull='git pull --rebase'
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # --------------------------------------------------------git alias
+alias aliyun='ssh root@luxuze.club'
 
 export GOPROXY=https://goproxy.io
-export https_proxy=http://127.0.0.1:6152;export http_proxy=http://127.0.0.1:6152;export all_proxy=socks5://127.0.0.1:6153
+
+
+#export https_proxy=http://127.0.0.1:6152;export http_proxy=http://127.0.0.1:6152;export all_proxy=socks5://127.0.0.1:6153
