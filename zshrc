@@ -26,12 +26,13 @@ alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset
 
 alias aliyun='ssh root@luxuze.club'
 
-export GOPROXY=https://goproxy.io
+export PATH=$PATH:/usr/local/go/bin
+export GOPROXY=https://goproxy.cn
 
 function proxyon {
-    export https_proxy=http://127.0.0.1:6152
-    export http_proxy=http://127.0.0.1:6152
-    export all_proxy=socks5://127.0.0.1:6153
+    export https_proxy=http://192.168.31.230:7890
+    export http_proxy=http://192.168.31.230:7890
+    export all_proxy=socks5://192.168.31.230:7891
 }
 
 function proxyoff {
@@ -39,6 +40,7 @@ function proxyoff {
     unset http_proxy
     unset all_proxy
 }
+
 function grepport {
     netstat -vanp tcp | grep $1
 }
