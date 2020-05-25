@@ -4,6 +4,7 @@ ZSH_THEME="random" # (...please let it be pie... please be some pie..)
 plugins=(
     git
     docker
+    zsh-autosuggestions
     )
 
 # --------------------------------------------------------git alias
