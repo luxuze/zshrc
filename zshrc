@@ -25,7 +25,7 @@ alias pull='git pull --rebase'
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # --------------------------------------------------------git alias
 
-alias aliyun='ssh root@luxuze.club'
+alias aliyun='ssh root@luxuze.cn'
 
 export PATH=$PATH:/usr/local/go/bin
 export GOPROXY=https://goproxy.cn
