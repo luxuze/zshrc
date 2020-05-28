@@ -4,8 +4,11 @@ ZSH_THEME="random" # (...please let it be pie... please be some pie..)
 plugins=(
     git
     docker
+    kubectl
+    budler
     zsh-autosuggestions
     )
+source <(kubectl completion zsh)
 
 # --------------------------------------------------------git alias
 function quickpush () {
