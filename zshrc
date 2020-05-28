@@ -2,12 +2,12 @@
 ZSH_THEME="random" # (...please let it be pie... please be some pie..)
 
 plugins=(
-        z
-        kubectl
-        git
-        sudo
-        vi-mode
-    )
+	z
+	kubectl
+	git
+	sudo
+	vi-mode
+)
 source <(kubectl completion zsh)
 
 # --------------------------------------------------------git alias
@@ -17,14 +17,6 @@ function quickpush () {
     git pull --rebase
     git push
 }
-
-alias st='git status'
-alias df='git diff'
-alias push='git push'
-alias co='git checkout'
-alias add='git add -A'
-alias commit='git commit -m'
-alias pull='git pull --rebase'
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # --------------------------------------------------------git alias
 
@@ -45,6 +37,7 @@ function proxyoff {
     unset all_proxy
 }
 
+# Mac
 function grepport {
     netstat -vanp tcp | grep $1
 }
