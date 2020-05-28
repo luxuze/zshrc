@@ -2,11 +2,11 @@
 ZSH_THEME="random" # (...please let it be pie... please be some pie..)
 
 plugins=(
-    git
-    docker
-    kubectl
-    budler
-    zsh-autosuggestions
+        z
+        kubectl
+        git
+        sudo
+        vi-mode
     )
 source <(kubectl completion zsh)
 
