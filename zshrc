@@ -9,10 +9,10 @@ ZSH_THEME="muse"
 
 plugins=(
 	z
-	kubectl
+# 	kubectl
 	git
 	sudo
-	vi-mode
+# 	vi-mode
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
