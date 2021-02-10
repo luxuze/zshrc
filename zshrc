@@ -3,9 +3,9 @@
 # git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 # git clone git://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
 #
-export ZSH="/root/.oh-my-zsh"
+export ZSH=$HOME/.oh-my-zsh
 
-ZSH_THEME="ys"
+ZSH_THEME=ys
 
 plugins=(
 	z
@@ -17,7 +17,7 @@ plugins=(
 	zsh-syntax-highlighting
 )
 
-HIST_STAMPS="yyyy-mm-dd"
+HIST_STAMPS=yyyy-mm-dd
 
 source $ZSH/oh-my-zsh.sh
 source <(kubectl completion zsh)
@@ -68,8 +68,8 @@ function grepport {
 # path >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
 export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:/root/go/bin
-export GOPATH=~/go
+export PATH=$PATH:$HOME/go/bin
+export GOPATH=$HOME/go
 export GO111MODULE=on
 #
 # path <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
