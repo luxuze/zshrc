@@ -15,6 +15,7 @@ plugins=(
  	vi-mode
 	zsh-autosuggestions
 	zsh-syntax-highlighting
+	rand-quote
 )
 
 HIST_STAMPS=yyyy-mm-dd
@@ -55,7 +56,7 @@ function set.go.proxy.in {
 
 # alias >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
-alias aliyun='ssh root@luxuze.cn'
+alias aliyun="ssh root@luxuze.cn"
 alias glog="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 # Mac
 function grepport {
@@ -74,4 +75,8 @@ export GO111MODULE=on
 #
 # path <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+
 set.go.proxy.out
+quote
+
+
