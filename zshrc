@@ -5,14 +5,14 @@
 #
 export ZSH="/root/.oh-my-zsh"
 
-ZSH_THEME="muse"
+ZSH_THEME="ys"
 
 plugins=(
 	z
-# 	kubectl
+ 	kubectl
 	git
 	sudo
-# 	vi-mode
+ 	vi-mode
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
@@ -29,16 +29,25 @@ bindkey ',' autosuggest-accept
 
 # proxy >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #
-function proxyon {
-	export https_proxy=http://172.17.16.1:7890
-	export http_proxy=http://172.17.16.1:7890
-	export all_proxy=socks5://172.17.16.1:7891
+# terminal surge enable
+function surge.proxy.on {
+	export https_proxy=http://127.0.0.1:6152;export http_proxy=http://127.0.0.1:6152;export all_proxy=socks5://127.0.0.1:6153
 }
-
-function proxyoff {
+# terminal surge disable
+function surge.proxy.off {
     unset https_proxy
     unset http_proxy
     unset all_proxy
+}
+
+# 七牛Go代理
+function set.go.proxy.out {
+     export GOPROXY=https://goproxy.cn
+ }
+# 公司Go代理
+function set.go.proxy.in {
+     export GOPROXY=http://goproxy.bilibili.co
+     export GOSUMDB=off
 }
 #
 # proxy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -60,7 +69,9 @@ function grepport {
 #
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:/root/go/bin
+export GOPATH=~/go
 export GO111MODULE=on
-export GOPROXY=https://goproxy.cn
 #
 # path <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+set.go.proxy.out
