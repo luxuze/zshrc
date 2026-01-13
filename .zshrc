@@ -118,12 +118,91 @@ function set.go.proxy.official {
 }
 
 
+function init.brew.mirror {
+  if [ $# -ne 1 ]; then
+    echo "Usage: init.brew.mirror <mirror>"
+    echo "Available mirrors: ustc, tsinghua"
+    return 1
+  fi
+
+  local mirror=$1
+  local brew_repo brew_core brew_cask bottles_domain
+
+  case "$mirror" in
+    ustc)
+      brew_repo="https://mirrors.ustc.edu.cn/brew.git"
+      brew_core="https://mirrors.ustc.edu.cn/homebrew-core.git"
+      brew_cask="https://mirrors.ustc.edu.cn/homebrew-cask.git"
+      bottles_domain="https://mirrors.ustc.edu.cn/homebrew-bottles"
+      ;;
+    tsinghua)
+      brew_repo="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+      brew_core="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+      brew_cask="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-cask.git"
+      bottles_domain="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+      ;;
+    *)
+      echo "Error: Unknown mirror '$mirror'"
+      echo "Available mirrors: ustc, tsinghua"
+      return 1
+      ;;
+  esac
+
+  echo "🔄 Switching Homebrew mirror to: $mirror"
+
+  if ! command -v brew &> /dev/null; then
+    echo "⚠️  Homebrew not found. Skipping git remote updates."
+  else
+    if [ -d "$(brew --repo)" ]; then
+      echo "  • Updating Homebrew repo..."
+      git -C "$(brew --repo)" remote set-url origin "$brew_repo" 2>/dev/null
+    fi
+
+    if [ -d "$(brew --repo homebrew/core)" ]; then
+      echo "  • Updating Homebrew Core..."
+      git -C "$(brew --repo homebrew/core)" remote set-url origin "$brew_core" 2>/dev/null
+    fi
+
+    if [ -d "$(brew --repo homebrew/cask)" ]; then
+      echo "  • Updating Homebrew Cask..."
+      git -C "$(brew --repo homebrew/cask)" remote set-url origin "$brew_cask" 2>/dev/null
+    fi
+  fi
+
+  echo "  • Updating environment variables in ~/.zshrc..."
+
+  local zshrc_file="$HOME/.zshrc"
+  local temp_file="${zshrc_file}.tmp"
+
+  grep -v "^export HOMEBREW_BOTTLE_DOMAIN=" "$zshrc_file" | \
+  grep -v "^export HOMEBREW_BREW_GIT_REMOTE=" | \
+  grep -v "^export HOMEBREW_CORE_GIT_REMOTE=" | \
+  grep -v "^export HOMEBREW_CASK_GIT_REMOTE=" > "$temp_file"
+
+  cat >> "$temp_file" << EOF
+
+export HOMEBREW_BOTTLE_DOMAIN="$bottles_domain"
+export HOMEBREW_BREW_GIT_REMOTE="$brew_repo"
+export HOMEBREW_CORE_GIT_REMOTE="$brew_core"
+export HOMEBREW_CASK_GIT_REMOTE="$brew_cask"
+export HOMEBREW_INSTALL_FROM_API=1
+EOF
+
+  mv "$temp_file" "$zshrc_file"
+
+  echo "  • Reloading shell configuration..."
+  source "$zshrc_file"
+
+  echo "✓ Homebrew mirror switched to: $mirror"
+}
+
+
 function x.awake {
   caffeinate -d -t 99999999999999
 }
 
 
-function x.quickpush {
+function x.push {
   git add . && \
   git commit -m "$(date '+%Y-%m-%d %H:%M:%S')" && \
   git pull --rebase && \
