@@ -204,7 +204,7 @@ function x.awake {
 
 function x.push {
   git add . && \
-  git commit -m "$(date '+%Y-%m-%d %H:%M:%S')" && \
+  git commit --no-verify -m "$(date '+%Y-%m-%d %H:%M:%S')" && \
   git pull --rebase && \
   git push
 }
