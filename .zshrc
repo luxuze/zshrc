@@ -223,3 +223,48 @@ function x.du {
   local target_dir="${1:-.}"
   du -sh "$target_dir"/* | sort -rh
 }
+
+function x.delay {
+  if [ $# -lt 2 ]; then
+    echo "Usage: x.delay <time> <command>"
+    echo "Time format: <number><unit> where unit can be:"
+    echo "  s - seconds"
+    echo "  m - minutes"
+    echo "  h - hours"
+    echo "  d - days"
+    echo "Example: x.delay 2h echo hello"
+    return 1
+  fi
+
+  local time_spec=$1
+  shift
+  local command="$@"
+
+  # Parse time specification
+  local number="${time_spec%[smhd]}"
+  local unit="${time_spec: -1}"
+
+  # Validate number
+  if ! [[ "$number" =~ ^[0-9]+$ ]]; then
+    echo "Error: Invalid time format '$time_spec'. Expected format: <number><unit>"
+    return 1
+  fi
+
+  # Convert to seconds
+  local seconds=0
+  case "$unit" in
+    s) seconds=$number ;;
+    m) seconds=$((number * 60)) ;;
+    h) seconds=$((number * 3600)) ;;
+    d) seconds=$((number * 86400)) ;;
+    *)
+      echo "Error: Invalid time unit '$unit'. Use s, m, h, or d"
+      return 1
+      ;;
+  esac
+
+  echo "⏰ Will execute in $time_spec ($seconds seconds): $command"
+  sleep $seconds
+  echo "▶️  Executing: $command"
+  eval "$command"
+}
