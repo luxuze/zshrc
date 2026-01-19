@@ -238,5 +238,32 @@ function x.delay {
   [[ "$unit" == "h" ]] && seconds=$((number * 3600))
   [[ "$unit" == "d" ]] && seconds=$((number * 86400))
 
-  sleep "$seconds"
+  local total_seconds=$seconds
+  local bar_width=60
+
+  while [[ $seconds -ge 0 ]]; do
+    local elapsed=$((total_seconds - seconds))
+    local percentage=$((elapsed * 100 / total_seconds))
+    local filled=$((percentage * bar_width / 100))
+
+    # Format remaining time
+    local hours=$((seconds / 3600))
+    local minutes=$(((seconds % 3600) / 60))
+    local secs=$((seconds % 60))
+    local time_str=$(printf "%02d:%02d:%02d" $hours $minutes $secs)
+
+    # Build progress bar with block style
+    local bar=""
+    for ((i = 0; i < filled; i++)); do bar+="█"; done
+    for ((i = filled; i < bar_width; i++)); do bar+="░"; done
+
+    printf "\r⏱ %s %3d%% %s" "$bar" "$percentage" "$time_str"
+
+    [[ $seconds -eq 0 ]] && break
+    sleep 1
+    ((seconds--))
+  done
+
+  echo ""
+  echo "✓ Delay completed!"
 }
