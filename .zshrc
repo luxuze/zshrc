@@ -12,8 +12,9 @@ plugins=(
 )
 HIST_STAMPS=yyyy-mm-dd
 source $ZSH/oh-my-zsh.sh
-bindkey ',' autosuggest-accept
 
+bindkey ',' autosuggest-accept
+bindkey '，' autosuggest-accept
 
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/go/bin
