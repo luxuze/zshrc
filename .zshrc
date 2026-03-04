@@ -204,7 +204,7 @@ function x.awake {
 
 
 function x.push {
-  git add . && \
+  git add --all && \
   git commit --no-verify -m "$(date '+%Y-%m-%d %H:%M:%S')" && \
   git pull --rebase && \
   git push
@@ -267,4 +267,119 @@ function x.delay {
 
   echo ""
   echo "✓ Delay completed!"
+}
+
+
+function x.busy {
+  local cpu_spec mem_spec spec
+  local -a pids
+
+  if [[ $# -eq 1 ]]; then
+    spec="$1"
+    if [[ "$spec" == *c* ]]; then
+      cpu_spec="${spec%%c*}"
+      mem_spec="${spec#*c}"
+    else
+      echo "Usage: x.busy <cpu> <mem>  or  x.busy <cpumem>"
+      echo "Examples: x.busy 2c 2g   |   x.busy 4c8g   |   x.busy 2 512m"
+      return 1
+    fi
+  else
+    cpu_spec="${1:-}"
+    mem_spec="${2:-}"
+  fi
+
+  [[ -z "$cpu_spec" || -z "$mem_spec" ]] && {
+    echo "Usage: x.busy <cpu> <mem>  or  x.busy <cpumem>"
+    echo "Examples: x.busy 2c 2g   |   x.busy 4c8g   |   x.busy 2 512m"
+    return 1
+  }
+
+  local cpu_count
+  cpu_count="${cpu_spec%%[^0-9]*}"
+  [[ -z "$cpu_count" ]] && cpu_count=1
+  (( cpu_count < 1 )) && cpu_count=1
+
+  local unit="${mem_spec: -1}"
+  local mem_num mem_bytes factor
+  if [[ "$unit" == [kKmMgG] ]]; then
+    mem_num="${mem_spec%?}"
+  else
+    unit="m"
+    mem_num="$mem_spec"
+  fi
+
+  [[ -z "$mem_num" || ! "$mem_num" =~ ^[0-9]+$ ]] && {
+    echo "Error: invalid mem spec '$mem_spec' (use like 512m or 2g)"
+    return 1
+  }
+
+  case "$unit" in
+    [kK]) factor=$((1024));;
+    [mM]) factor=$((1024*1024));;
+    [gG]) factor=$((1024*1024*1024));;
+    *) factor=$((1024*1024));;
+  esac
+  mem_bytes=$((mem_num * factor))
+
+  local pid_file="/tmp/x_busy_pids"
+  : > "$pid_file"
+
+  local i
+  for (( i=0; i<cpu_count; i++ )); do
+    ( yes > /dev/null ) &
+    pids+=($!)
+    echo $! >> "$pid_file"
+  done
+
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - "$mem_bytes" >> /dev/null 2>&1 <<'PY' &
+import sys, time
+n = int(sys.argv[1])
+chunks = []
+step = 10*1024*1024
+while n > 0:
+    s = step if n > step else n
+    chunks.append(bytearray(s))
+    n -= s
+time.sleep(10**9)
+PY
+    pids+=($!)
+    echo $! >> "$pid_file"
+  elif command -v perl >/dev/null 2>&1; then
+    perl -e 'my $n=shift; my @a; my $step=10*1024*1024; while ($n>0){ my $s=$n>$step?$step:$n; push @a, "x" x $s; $n-=$s;} sleep 10**9;' "$mem_bytes" &
+    pids+=($!)
+    echo $! >> "$pid_file"
+  else
+    echo "Warn: python3/perl not found; cannot allocate RAM load."
+  fi
+
+  echo "x.busy started: $(wc -l < "$pid_file") processes (CPU: ${cpu_count}, MEM: ${mem_spec})."
+  echo "Press Ctrl+C to stop, or run x.busy.stop from another shell."
+
+  # Trap Ctrl+C/TERM to clean up spawned load processes
+  trap '_xb_cleanup_ret=$?; echo; echo "Stopping x.busy..."; \
+        for pid in ${pids[@]}; do kill "$pid" 2>/dev/null; done; \
+        sleep 0.2; \
+        for pid in ${pids[@]}; do kill -9 "$pid" 2>/dev/null; done; \
+        [[ -f "$pid_file" ]] && { xargs kill 2>/dev/null < "$pid_file"; rm -f "$pid_file"; }; \
+        echo "x.busy stopped."; return 130' INT TERM
+
+  # Block until loads are terminated (via Ctrl+C or external stop)
+  if [[ ${#pids[@]} -gt 0 ]]; then
+    wait ${pids[@]} 2>/dev/null || true
+  fi
+  # Ensure cleanup if processes ended externally
+  [[ -f "$pid_file" ]] && rm -f "$pid_file"
+}
+
+function x.busy.stop {
+  local pid_file="/tmp/x_busy_pids"
+  if [[ -f "$pid_file" ]]; then
+    xargs kill -9 < "$pid_file" 2>/dev/null || true
+    rm -f "$pid_file"
+    echo "x.busy stopped."
+  else
+    echo "No running x.busy processes found."
+  fi
 }
